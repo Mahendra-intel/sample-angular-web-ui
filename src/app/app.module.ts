@@ -12,7 +12,7 @@ import { AuthorizeInterceptor } from './authorize.interceptor';
 @NgModule({
   declarations: [AppComponent, DialogContentComponent],
   imports: [
-    HttpClientModule,
+    HttpClientModule, 
     BrowserModule,
     AppRoutingModule,
     KvmModule.forRoot(environment),
