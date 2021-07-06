@@ -17,12 +17,22 @@
       <mat-icon>tv_off</mat-icon>
     </button>
   </div>
+  <mat-form-field>
+    <mat-label>Choose encoding type</mat-label>
+    <mat-select (selectionChange)="onEncodingChange($event.value)">
+        <mat-option *ngFor="let encode of encodings" [value]="encode.value">
+            {{ encode.viewValue }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
 </mat-toolbar>
 <amt-kvm
   *ngIf="readyToLoadKVM"
   class="kvm"
   [deviceConnection]="deviceConnection"
+  [selectedEncoding]="selectedEncoding"
   (deviceStatus)="deviceStatus($event)"
 ></amt-kvm>
 
 <mat-spinner class="spinner" *ngIf="isLoading"></mat-spinner>
+

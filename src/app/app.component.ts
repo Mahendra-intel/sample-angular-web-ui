@@ -16,31 +16,42 @@ import SnackbarDefaults from './snackBarDefault';
 export class AppComponent implements OnInit {
   title = 'test-ang';
   @Input() deviceState: number = 0;
-  private deviceConnection: EventEmitter<boolean> = new EventEmitter<boolean>(true)
+  private deviceConnection: EventEmitter<boolean> = new EventEmitter<boolean>(
+    true
+  );
+  @Output() private selectedEncoding: EventEmitter<number> = new EventEmitter<number>()
   isLoading: boolean = false;
   isPoweredOn: boolean = false;
   powerState: any = 0;
   deviceId: string = environment.deviceId;
   readyToLoadKVM: boolean = false;
   timeInterval!: any;
+
+  encodings = [
+    { value: 1, viewValue: 'RLE 8' },
+    { value: 2, viewValue: 'RLE 16' },
+  ];
+
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private readonly deviceService: AppService
-  ) {
-    
-  }
+  ) {}
 
   checkPowerStatus(): boolean {
     return this.powerState.powerstate === 2;
   }
 
   ngOnInit(): void {
-   this.deviceService
+    this.deviceService
       .setAmtFeatures(this.deviceId)
       .pipe(
         catchError(() => {
-          this.snackBar.open(`Error enabling kvm`, undefined, SnackbarDefaults.defaultError)
+          this.snackBar.open(
+            `Error enabling kvm`,
+            undefined,
+            SnackbarDefaults.defaultError
+          );
           return of();
         })
       )
@@ -85,16 +96,20 @@ export class AppComponent implements OnInit {
             }
           });
       });
-      this.timeInterval = interval(15000)
+    this.timeInterval = interval(15000)
       .pipe(mergeMap(() => this.deviceService.getPowerState(this.deviceId)))
       .subscribe();
   }
 
   connectionStatus = (value): void => {
-    this.deviceConnection.emit(value)
+    this.deviceConnection.emit(value);
   };
 
   deviceStatus = (event): void => {
     this.deviceState = event;
+  };
+
+  onEncodingChange = (e:any) => {
+   this.selectedEncoding.emit(e)
   };
 }
